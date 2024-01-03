@@ -1,0 +1,46 @@
+#contadores{
+    margin-top: 10px;
+    text-decoration-color: black;
+    text-decoration-thickness: 3px;
+    font-weight: bold;
+}
+
+.divRed{
+    background-color: red;
+    padding: 5px;
+    
+}
+
+.divBlue{
+    background-color: blue;
+    padding:5px;
+}
+
+.divGreen{
+    background-color: green;
+    padding:5px;
+}
+
+.centerRed{
+    text-align: center;
+    --ion-background-color :red;
+    color: white;
+}
+
+.centerBlue{
+    text-align: center;
+    --ion-background-color :blue;
+    color: white;
+}
+
+.centerGreen{
+    text-align: center;
+    --ion-background-color :green;
+    color: white;
+}
+
+.itemcenter {
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+  }

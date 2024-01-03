@@ -1,17 +1,39 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
     <ion-title>
-      Tab 2
+      <strong>Precios</strong>
     </ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">Tab 2</ion-title>
-    </ion-toolbar>
-  </ion-header>
 
-  <app-explore-container name="Tab 2 page"></app-explore-container>
+  <ion-list *ngFor="let precio of precios">
+    <ion-card>
+      <ion-card-content>
+        <ion-grid>
+          <!--Abrir opciones (modificación)-->
+          <ion-row (click)="opciones(precio)">
+            <ion-col size="9">
+              {{precio.nombre}}
+            </ion-col>
+            <ion-col size="3">
+              {{precio.precio}} €
+            </ion-col>
+
+          </ion-row>
+        </ion-grid>
+      </ion-card-content>
+    </ion-card>
+  </ion-list>
+
+
+
+
+  <ion-fab slot="fixed" horizontal="center" vertical="bottom" hidden="true">
+    <ion-fab-button [routerLink]="['/agregar-precio']">
+      <ion-icon name="add"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
+
 </ion-content>

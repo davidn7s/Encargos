@@ -1,17 +1,50 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
-    <ion-title>
-      Tab 3
-    </ion-title>
+    <ion-title><strong>Existencias</strong></ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">Tab 3</ion-title>
-    </ion-toolbar>
-  </ion-header>
 
-  <app-explore-container name="Tab 3 page"></app-explore-container>
+  <ion-list *ngFor="let existencia of existencias">
+    <ion-card>
+      <ion-card-content>
+        <ion-grid>
+          <!--Abrir opciones (modificación)-->
+          <ion-row (click)="opciones(existencia)">
+            <ion-col size="9">
+              {{existencia.nombre}}
+            </ion-col>
+            <ion-col size="3">
+              {{existencia.cantidad}}
+            </ion-col>
+
+          </ion-row>
+        </ion-grid>
+      </ion-card-content>
+    </ion-card>
+  </ion-list>
+
+  <br/>
+  <br/>
+  <!--Contadores-->
+  <ion-item id="contadores">
+    <div *ngIf="contadorGanno>0">
+      <strong>Hay que hacer {{contadorGanno}} docenas de Gañotes</strong> 
+      <br />
+    </div>
+    <div *ngIf="contadorGannoPeq>0">
+      <strong>Hay que hacer {{contadorGannoPeq}} docenas de Gañotes Pequeños</strong>
+      <br />
+    </div>
+    <div *ngIf="contadorPesti>0">
+      <strong>Hay que hacer {{contadorPesti}} kilos de Pestiños</strong>
+      <br />
+    </div>
+   <div *ngIf="contadorRoscos>0">
+    <strong>Hay que hacer {{contadorRoscos}} kilos de Roscos</strong>
+   </div>
+  </ion-item>
+
+
 </ion-content>

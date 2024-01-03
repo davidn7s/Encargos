@@ -1,17 +1,104 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
     <ion-title>
-      Tab 1
+      <strong>Pedidos</strong>
     </ion-title>
+
+    <!--Contadores-->
+    <ion-item id="contadores">
+      Hay {{contadorGanno}} docenas de Gañotes pedidos
+      <br />
+      <div *ngIf="contadorGannoPeq>0">
+        Hay {{contadorGannoPeq}} docenas de Gañotes Pequeños pedidos
+        <br />
+      </div>
+      Hay {{contadorPesti}} kilos de Pestiños pedidos
+      <br />
+      Hay {{contadorRoscos}} kilos de Roscos pedidos
+      <br />
+      <h5><strong>Hay {{precioTotalPedidos}}€ en total</strong></h5>
+    </ion-item>
+
+    <!--Barra de búsqueda-->
+    <ion-searchbar placeholder="Buscar pedido" (ionChange)="buscar($event)"></ion-searchbar>
+
+    <!--Select de tipo-->
+    <ion-item>
+      <ion-select [(ngModel)]="tipo" (ionChange)="cambioTipo($event)" interface="popover">
+        <ion-select-option value="todo">Todo</ion-select-option>
+        <ion-select-option value="Encargado">Encargado</ion-select-option>
+        <ion-select-option value="Hecho">Hecho</ion-select-option>
+        <ion-select-option value="Entregado">Entregado</ion-select-option>
+      </ion-select>
+    </ion-item>
+
   </ion-toolbar>
 </ion-header>
 
 <ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">Tab 1</ion-title>
-    </ion-toolbar>
-  </ion-header>
 
-  <app-explore-container name="Tab 1 page"></app-explore-container>
+  <ion-list *ngFor="let p of pedidosMuestra | filtro: textoBuscar: 'nombreCliente'">
+    <ion-card mode="ios" (click)="opciones(p)">
+
+      <!--Header para los colores dependiendo del estado-->
+      <div class="divRed" *ngIf="p.estado == 'Encargado'">
+      </div>
+      <div class="divBlue" *ngIf="p.estado == 'Hecho'">
+      </div>
+      <div class="divGreen" *ngIf="p.estado == 'Entregado'">
+      </div>
+
+      <ion-card-header>
+        <ion-card-title>
+          <ion-row>
+            <ion-col size="9">
+              {{p.nombreCliente}}
+            </ion-col>
+
+            <ion-col size="3">
+              <ion-label>{{p.precioTotal}}€</ion-label>
+            </ion-col>
+
+          </ion-row>
+        </ion-card-title>
+        <ion-card-subtitle>{{p.fechaEntrega}}</ion-card-subtitle>
+      </ion-card-header>
+
+      <ion-card-content>
+
+        <!--Lista para los productos del pedido-->
+        <ion-list *ngFor="let pro of p.productos">
+          <ion-item>
+            <ion-label>{{pro.nombre}}</ion-label>
+            <ion-label *ngIf="pro.nombre!='Roscos' && pro.nombre!='Pestiños'">{{pro.cantidad}} Docenas</ion-label>
+            <ion-label *ngIf="pro.nombre=='Roscos' || pro.nombre=='Pestiños'">{{pro.cantidad}} Kilos</ion-label>
+          </ion-item>
+        </ion-list>
+
+      </ion-card-content>
+
+      <!--Footer donde se muestra los estados con colores-->
+      <ion-item class="centerRed" *ngIf="p.estado == 'Encargado'">
+        <h4>{{p.estado}}</h4>
+      </ion-item>
+
+      <ion-item class="centerBlue" *ngIf="p.estado == 'Hecho'">
+        <h4>{{p.estado}}</h4>
+      </ion-item>
+
+      <ion-item class="centerGreen" *ngIf="p.estado == 'Entregado'">
+        <h4>{{p.estado}}</h4>
+      </ion-item>
+
+    </ion-card>
+    <br />
+    <br />
+  </ion-list>
+
+  <!--Boton para agregar nuevos pedidos-->
+  <ion-fab slot="fixed" style="z-index: 1000;" horizontal="center" vertical="bottom">
+    <ion-fab-button [routerLink]="['/agregar-pedido']">
+      <ion-icon name="add"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
 </ion-content>

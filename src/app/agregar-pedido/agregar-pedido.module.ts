@@ -4,17 +4,17 @@ import { FormsModule } from '@angular/forms';
 
 import { IonicModule } from '@ionic/angular';
 
-import { Tab3PageRoutingModule } from './tab3-routing.module';
+import { AgregarPedidoPageRoutingModule } from './agregar-pedido-routing.module';
 
-import { Tab3Page } from './tab3.page';
+import { AgregarPedidoPage } from './agregar-pedido.page';
 
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
     IonicModule,
-    Tab3PageRoutingModule
+    AgregarPedidoPageRoutingModule
   ],
-  declarations: [Tab3Page]
+  declarations: [AgregarPedidoPage]
 })
-export class Tab3PageModule {}
+export class AgregarPedidoPageModule {}

@@ -24,3 +24,32 @@
 @import "@ionic/angular/css/text-alignment.css";
 @import "@ionic/angular/css/text-transformation.css";
 @import "@ionic/angular/css/flex-utils.css";
+
+
+ion-loading.custom-loading {
+    --background: #e3edff;
+    --spinner-color: #1c6dff;
+
+    color: #1c6dff;
+}
+
+.app-alert .alert-wrapper {
+    .alert-button-inner {
+        color: #1c6dff;
+    }
+}
+
+.submit-btn{
+    background-color: red;
+}
+
+.ion-color-submitbutton {
+    --ion-color-base: var(--ion-color-submitbutton);
+    --ion-color-base-rgb: var(--ion-color-submitbutton-rgb);
+    --ion-color-contrast: var(--ion-color-submitbutton-contrast);
+    --ion-color-contrast-rgb: var(--ion-color-submitbutton-contrast-rgb);
+    --ion-color-shade: var(--ion-color-submitbutton-shade);
+    --ion-color-tint: var(--ion-color-submitbutton-tint);
+  }
+
+  

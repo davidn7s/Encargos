@@ -1,0 +1,66 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    
+    <ion-buttons slot="start">
+      <ion-back-button></ion-back-button>
+    </ion-buttons>
+
+    <ion-title>Nuevo Pedido</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <ion-item > 
+    <ion-label class="item" position="fixed">Nombre Completo</ion-label>
+    <input type="text" [(ngModel)]="pedido.nombreCliente" class="item">
+  </ion-item>
+
+  <ion-item>
+    <ion-label class="item" position="fixed" >Fecha</ion-label>
+    <input type="date" [(ngModel)]="fecha" class="item">
+  </ion-item>
+
+  <ion-item>
+    <h3 class="center">Productos</h3>
+
+
+<ion-list>
+  <h4 class="center">Gañotes</h4>
+  <ion-item>
+    <ion-label  position="fixed" >Cantidad</ion-label>
+    <input type="number" [(ngModel)]="cantidadGannote" min="0">
+  </ion-item>
+
+  <h4 class="center">Gañotes Pequeños</h4>
+  <ion-item>
+    <ion-label  position="fixed">Cantidad</ion-label>
+    <input type="number" [(ngModel)]="cantidadGannotePeq" min="0">
+  </ion-item>
+
+  <h4 class="center">Pestiños</h4>
+  <ion-item>
+    <ion-label  position="fixed" >Cantidad</ion-label>
+    <input type="number" [(ngModel)]="cantidadPesti" min="0">
+  </ion-item>
+
+  <h4 class="center">Roscos</h4>
+  <ion-item>
+    <ion-label  position="fixed" >Cantidad</ion-label>
+    <input type="number" [(ngModel)]="cantidadRosco" min="0">
+  </ion-item>
+</ion-list>
+
+  </ion-item>
+
+
+
+  <!-- Boton de submit-->
+  <ion-button
+  color="submitbutton"
+  expand="block"
+  (click)="cargarFormulario()"
+  [disabled]="deshabilitado()"
+>
+  Listo</ion-button
+>
+</ion-content>

@@ -1,0 +1,36 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+
+    <ion-buttons slot="start">
+      <ion-back-button></ion-back-button>
+    </ion-buttons>
+
+    <ion-title>Nuevo Precio</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content >
+
+
+    <ion-item > 
+      <ion-label class="item" position="fixed" color="primary">Nombre Completo</ion-label>
+      <input type="text" [(ngModel)]="precio.nombre" class="item">
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="fixed" class="item" color="primary">Precio</ion-label>
+      <ion-input type="number" class="item" [(ngModel)]="precio.precio" min="0"></ion-input>
+    </ion-item>
+
+
+    <!-- Boton de submit-->
+    <ion-button
+    color="submitbutton"
+    class="submit-btn"
+    expand="block"
+    (click)="agregar()"
+    [disabled]="deshabilitado()"
+  >
+    Listo</ion-button
+  >
+</ion-content>
