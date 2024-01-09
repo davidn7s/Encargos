@@ -56,7 +56,7 @@ export class AgregarPrecioPage implements OnInit {
   async presentToast(message: string) {
     const toast = await this.toastCtrl.create({
       message: message,
-      duration: 6000,
+      duration: 2000,
     });
     toast.present();
   } //end Toast
@@ -74,9 +74,9 @@ export class AgregarPrecioPage implements OnInit {
       cssClass: 'custom-loading',
     }).then(a => {
       a.present().then(() => {
-        console.log('presented');
+        ;
         if (!this.isLoading) {
-          a.dismiss().then(() => console.log('abort presenting'));
+          a.dismiss().then(() => console.log(''));
         }
       });
     });

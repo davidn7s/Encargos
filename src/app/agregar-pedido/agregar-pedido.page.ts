@@ -28,7 +28,7 @@ export class AgregarPedidoPage implements OnInit {
   public cantidadRosco = 0;
   public rosco: Rosco = new Rosco();
 
-  fecha: Date= new Date();
+  fecha: Date = new Date();
 
   isLoading: boolean = false;
 
@@ -48,6 +48,7 @@ export class AgregarPedidoPage implements OnInit {
 
       const gannotePromise = this.fireService.getPrecioByID(IDGANNOTES).then((element: Precio) => {
         this.gannote.precio = element.precio;
+        this.gannote.id = IDGANNOTES;
         this.pedido.productos.push(this.gannote);
 
 
@@ -63,6 +64,7 @@ export class AgregarPedidoPage implements OnInit {
 
       const gannotePeqPromise = this.fireService.getPrecioByID(IDGANNOTESPEQ).then((element: Precio) => {
         this.gannotePeq.precio = element.precio;
+        this.gannotePeq.id = IDGANNOTESPEQ;
         this.pedido.productos.push(this.gannotePeq);
       })
 
@@ -74,6 +76,7 @@ export class AgregarPedidoPage implements OnInit {
 
       const pestinnosPromise = this.fireService.getPrecioByID(IDPESTINNOS).then((element: Precio) => {
         this.pestinno.precio = element.precio;
+        this.pestinno.id = IDPESTINNOS;
         this.pedido.productos.push(this.pestinno);
 
       })
@@ -85,6 +88,7 @@ export class AgregarPedidoPage implements OnInit {
       this.rosco.cantidad = this.cantidadRosco;
       const roscoPromise = this.fireService.getPrecioByID(IDROSCOS).then((element: Precio) => {
         this.rosco.precio = element.precio;
+        this.rosco.id = IDROSCOS;
         this.pedido.productos.push(this.rosco);
 
       })
@@ -144,7 +148,7 @@ export class AgregarPedidoPage implements OnInit {
   async presentToast(message: string) {
     const toast = await this.toastCtrl.create({
       message: message,
-      duration: 6000,
+      duration: 2000,
     });
     toast.present();
   } //end Toast
@@ -162,7 +166,7 @@ export class AgregarPedidoPage implements OnInit {
       cssClass: 'custom-loading',
     }).then(a => {
       a.present().then(() => {
-        console.log('presented');
+        ;
         if (!this.isLoading) {
           a.dismiss().then(() => console.log('abort presenting'));
         }

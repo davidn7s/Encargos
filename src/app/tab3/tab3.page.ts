@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { AlertController, LoadingController } from '@ionic/angular';
 import { IDGANNOTES, IDGANNOTESPEQ, IDPESTINNOS, IDROSCOS } from 'src/model/CONSTANTES';
+import { ESTADOS } from 'src/model/ESTADOS';
 import { Existencia } from 'src/model/Existencia';
 import { Pedido } from 'src/model/Pedido';
 import { FireServiceProvider } from 'src/providers/api-service/fire-service';
@@ -25,32 +26,31 @@ export class Tab3Page implements OnInit {
   constructor(private firebase: FireServiceProvider, private alertCtrl: AlertController, public loadingCtrl: LoadingController) { }
 
   ngOnInit() {
+
+  }//end ngOnInit
+
+  ionViewWillEnter() {
     this.firebase.getExistenciasTR().subscribe(() => {
       this.getExistencias();
-      this.contadorGanno = 0;
-      this.contadorGannoPeq = 0;
-      this.contadorPesti = 0;
-      this.contadorRoscos = 0;
-      this.calcularContadores();
     });
     this.firebase.getPedidosTR().subscribe(() => {
-      this.contadorGanno = 0;
-      this.contadorGannoPeq = 0;
-      this.contadorPesti = 0;
-      this.contadorRoscos = 0;
       this.getPedidos();
     });
-  }//end ngOnInit
-  getExistencias() {
-    this.presentLoading();
-    this.firebase.getExistencias()
-      .then((element) => {
-        this.existencias = element;
-        this.dismiss();
-      }).catch((error: string) => {
-        console.log(error)
-        this.dismiss();
-      })
+
+  }
+  async getExistencias() {
+    try {
+      this.presentLoading();
+      const element = await this.firebase.getExistencias();
+
+      this.existencias = element;
+
+      this.calcularContadores();
+      this.dismiss();
+
+    } catch (error) {
+      console.log(error)
+    }
   }//end getExistencias
   async getPedidos() {
     try {
@@ -135,7 +135,7 @@ export class Tab3Page implements OnInit {
       .create({
         cssClass: 'app-alert',
         header:
-          'Restar ' + existencia.nombre +  ' (En docenas)',
+          'Restar ' + existencia.nombre + ' (En docenas)',
         inputs: [
           {
             name: 'resExis',
@@ -182,9 +182,9 @@ export class Tab3Page implements OnInit {
       cssClass: 'custom-loading',
     }).then(a => {
       a.present().then(() => {
-        console.log('presented');
+        ;
         if (!this.isLoading) {
-          a.dismiss().then(() => console.log('abort presenting'));
+          a.dismiss().then(() => console.log(''));
         }
       });
     });
@@ -194,38 +194,43 @@ export class Tab3Page implements OnInit {
     return await this.loadingCtrl.dismiss();
   }//end dismiss
   calcularContadores() {
-    this.presentLoading();
+    this.contadorGanno = 0;
+    this.contadorGannoPeq = 0;
+    this.contadorPesti = 0;
+    this.contadorRoscos = 0;
 
     //Calcular cuantos pedidos hay de cada dulce
     for (let inx = 0; inx < this.pedidos.length; inx++) {
-      for (let j = 0; j < this.pedidos[inx].productos.length; j++) {
-        if (this.pedidos[inx].productos[j].nombre === "Roscos") {
-          this.contadorRoscos += this.pedidos[inx].productos[j].cantidad;
-        } else if (this.pedidos[inx].productos[j].nombre === "Gañotes") {
-          this.contadorGanno += this.pedidos[inx].productos[j].cantidad;
-        } else if (this.pedidos[inx].productos[j].nombre === "Pestiños") {
-          this.contadorPesti += this.pedidos[inx].productos[j].cantidad;
-        }
-        else if (this.pedidos[inx].productos[j].nombre === "Gañotes Pequeños") {
-          this.contadorGannoPeq += this.pedidos[inx].productos[j].cantidad;
+
+      if (this.pedidos[inx].estado != ESTADOS.ENTREGADO) {
+        for (let j = 0; j < this.pedidos[inx].productos.length; j++) {
+          if (this.pedidos[inx].productos[j].nombre === "Roscos") {
+            this.contadorRoscos += this.pedidos[inx].productos[j].cantidad;
+          } else if (this.pedidos[inx].productos[j].nombre === "Gañotes") {
+            this.contadorGanno += this.pedidos[inx].productos[j].cantidad;
+          } else if (this.pedidos[inx].productos[j].nombre === "Pestiños") {
+            this.contadorPesti += this.pedidos[inx].productos[j].cantidad;
+          }
+          else if (this.pedidos[inx].productos[j].nombre === "Gañotes Pequeños") {
+            this.contadorGannoPeq += this.pedidos[inx].productos[j].cantidad;
+          }
         }
       }
+
     }
 
-  //Restar para saber los que quedan por hacer
-  for(let inx=0; inx<this.existencias.length; inx++){
-    if(this.existencias[inx].id === IDGANNOTES){
-      this.contadorGanno-=this.existencias[inx].cantidad;
-    }else if(this.existencias[inx].id === IDGANNOTESPEQ){
-      this.contadorGannoPeq-=this.existencias[inx].cantidad;
-    }else if(this.existencias[inx].id === IDPESTINNOS){
-      this.contadorPesti-=this.existencias[inx].cantidad;
-    }else if(this.existencias[inx].id === IDROSCOS){
-      this.contadorRoscos -= this.existencias[inx].cantidad;
+    //Restar para saber los que quedan por hacer
+    for (let inx = 0; inx < this.existencias.length; inx++) {
+      if (this.existencias[inx].id === IDGANNOTES) {
+        this.contadorGanno -= this.existencias[inx].cantidad;
+      } else if (this.existencias[inx].id === IDGANNOTESPEQ) {
+        this.contadorGannoPeq -= this.existencias[inx].cantidad;
+      } else if (this.existencias[inx].id === IDPESTINNOS) {
+        this.contadorPesti -= this.existencias[inx].cantidad;
+      } else if (this.existencias[inx].id === IDROSCOS) {
+        this.contadorRoscos -= this.existencias[inx].cantidad;
+      }
     }
-  }
-
-  this.dismiss();
   }//end calcularContadores
 
 }

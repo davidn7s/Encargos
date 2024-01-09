@@ -98,7 +98,7 @@ export class Tab1Page {
       cssClass: 'custom-loading',
     }).then(a => {
       a.present().then(() => {
-        console.log('presented');
+        ;
         if (!this.isLoading) {
           a.dismiss().then(() => console.log('abort presenting'));
         }
@@ -255,7 +255,7 @@ export class Tab1Page {
   async presentToast(message: string) {
     const toast = await this.toastCtrl.create({
       message: message,
-      duration: 6000,
+      duration: 2000,
     });
     toast.present();
   } //end Toast

@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { LoadingController, ModalController, ToastController } from '@ionic/angular';
-import { IDGANNOTES,IDGANNOTESPEQ,IDPESTINNOS,IDROSCOS } from 'src/model/CONSTANTES';
+import { IDGANNOTES, IDGANNOTESPEQ, IDPESTINNOS, IDROSCOS } from 'src/model/CONSTANTES';
 import { Gannote } from 'src/model/Gannote';
 import { Pedido } from 'src/model/Pedido';
 import { Pestinno } from 'src/model/Pestinno';
@@ -18,49 +18,49 @@ export class ModificarPedidoPage implements OnInit {
 
   @Input() pedidoJson: any;
 
-  public cantidadGannote=0;
-  public gannote:Gannote = new Gannote();
+  public cantidadGannote = 0;
+  public gannote: Gannote = new Gannote();
 
-  public cantidadGannotePeq=0;
-  public gannotePeq:Gannote = new Gannote();
+  public cantidadGannotePeq = 0;
+  public gannotePeq: Gannote = new Gannote();
 
-  public cantidadPesti=0;
-  public pestinno:Pestinno = new Pestinno();
+  public cantidadPesti = 0;
+  public pestinno: Pestinno = new Pestinno();
 
-  public cantidadRosco=0;
-  public rosco:Rosco = new Rosco();
+  public cantidadRosco = 0;
+  public rosco: Rosco = new Rosco();
 
-  fecha:any;
+  fecha: any;
 
 
 
-  pedido:Pedido= new Pedido();
+  pedido: Pedido = new Pedido();
 
-  isLoading:boolean=false;
-  constructor(private fireService:FireServiceProvider,private toastCtrl:ToastController, private loadingCtrl:LoadingController,private modalCtrl:ModalController) { }
+  isLoading: boolean = false;
+  constructor(private fireService: FireServiceProvider, private toastCtrl: ToastController, private loadingCtrl: LoadingController, private modalCtrl: ModalController) { }
 
   ngOnInit() {
-    this.pedido=Pedido.createFromJsonObject(JSON.parse(this.pedidoJson))
-    this.fecha=this.pedido.fechaEntrega.split("/").reverse().join("-");
+    this.pedido = Pedido.createFromJsonObject(JSON.parse(this.pedidoJson))
+    this.fecha = this.pedido.fechaEntrega.split("/").reverse().join("-");
     this.calcularContadores();
   }
 
   calcularContadores() {
-  
-      for (let j = 0; j < this.pedido.productos.length; j++) {
-        if (this.pedido.productos[j].nombre === "Roscos") {
-          this.cantidadRosco += this.pedido.productos[j].cantidad;
-        } else if (this.pedido.productos[j].nombre === "Gañotes") {
-          this.cantidadGannote += this.pedido.productos[j].cantidad;
-        } else if (this.pedido.productos[j].nombre === "Pestiños") {
-          this.cantidadPesti += this.pedido.productos[j].cantidad;
-        }
-        else if (this.pedido.productos[j].nombre === "Gañotes Pequeños") {
-          this.cantidadGannotePeq += this.pedido.productos[j].cantidad;
-        }
-      }
 
-      this.pedido.productos= new Array<any>();
+    for (let j = 0; j < this.pedido.productos.length; j++) {
+      if (this.pedido.productos[j].nombre === "Roscos") {
+        this.cantidadRosco += this.pedido.productos[j].cantidad;
+      } else if (this.pedido.productos[j].nombre === "Gañotes") {
+        this.cantidadGannote += this.pedido.productos[j].cantidad;
+      } else if (this.pedido.productos[j].nombre === "Pestiños") {
+        this.cantidadPesti += this.pedido.productos[j].cantidad;
+      }
+      else if (this.pedido.productos[j].nombre === "Gañotes Pequeños") {
+        this.cantidadGannotePeq += this.pedido.productos[j].cantidad;
+      }
+    }
+
+    this.pedido.productos = new Array<any>();
   }
 
 
@@ -71,69 +71,73 @@ export class ModificarPedidoPage implements OnInit {
       return true;
     if (this.pedido.nombreCliente.length < 3)
       return true;
-    if (this.cantidadGannote <1 && this.cantidadGannotePeq <1 && this.cantidadPesti<1 && this.cantidadRosco<1)
+    if (this.cantidadGannote < 1 && this.cantidadGannotePeq < 1 && this.cantidadPesti < 1 && this.cantidadRosco < 1)
       return true;
-    if(this.pedido.fechaEntrega ==undefined)
-    return true;
- 
+    if (this.pedido.fechaEntrega == undefined)
+      return true;
+
     return false;
   } // end deshabilitado
 
-  cargarFormulario(){
+  cargarFormulario() {
 
     this.presentLoading()
     const promesas: Promise<any>[] = [];
-  
-    if(this.cantidadGannote>0){
-      this.gannote.cantidad=this.cantidadGannote;
-  
-      const gannotePromise =  this.fireService.getPrecioByID(IDGANNOTES).then((element:Precio)=>{
-        this.gannote.precio=element.precio;
+
+    if (this.cantidadGannote > 0) {
+      this.gannote.cantidad = this.cantidadGannote;
+
+      const gannotePromise = this.fireService.getPrecioByID(IDGANNOTES).then((element: Precio) => {
+        this.gannote.precio = element.precio;
+        this.gannote.id = IDGANNOTES;
         this.pedido.productos.push(this.gannote);
-  
-       
+
+
       })
-  
+
       promesas.push(gannotePromise);
     }
-  
-    if(this.cantidadGannotePeq>0){
-      this.gannotePeq.cantidad=this.cantidadGannotePeq;
-      this.gannotePeq.pequenno=true;
-      this.gannotePeq.nombre=Gannote.cambiarNombre(this.gannotePeq);
-  
-      const gannotePeqPromise =this.fireService.getPrecioByID(IDGANNOTESPEQ).then((element:Precio)=>{
-        this.gannotePeq.precio=element.precio;
+
+    if (this.cantidadGannotePeq > 0) {
+      this.gannotePeq.cantidad = this.cantidadGannotePeq;
+      this.gannotePeq.pequenno = true;
+      this.gannotePeq.nombre = Gannote.cambiarNombre(this.gannotePeq);
+
+      const gannotePeqPromise = this.fireService.getPrecioByID(IDGANNOTESPEQ).then((element: Precio) => {
+        this.gannotePeq.precio = element.precio;
+        this.gannotePeq.id = IDGANNOTESPEQ;
         this.pedido.productos.push(this.gannotePeq);
       })
-  
+
       promesas.push(gannotePeqPromise);
     }
-  
-    if(this.cantidadPesti>0){
-      this.pestinno.cantidad=this.cantidadPesti;
-  
-      const pestinnosPromise =this.fireService.getPrecioByID(IDPESTINNOS).then((element:Precio)=>{
-        this.pestinno.precio=element.precio;
+
+    if (this.cantidadPesti > 0) {
+      this.pestinno.cantidad = this.cantidadPesti;
+
+      const pestinnosPromise = this.fireService.getPrecioByID(IDPESTINNOS).then((element: Precio) => {
+        this.pestinno.precio = element.precio;
+        this.pestinno.id = IDPESTINNOS;
         this.pedido.productos.push(this.pestinno);
-  
+
       })
-  
+
       promesas.push(pestinnosPromise);
     }
-  
-    if(this.cantidadRosco>0){
-      this.rosco.cantidad=this.cantidadRosco;
-      const roscoPromise= this.fireService.getPrecioByID(IDROSCOS).then((element:Precio)=>{
-        this.rosco.precio=element.precio;
+
+    if (this.cantidadRosco > 0) {
+      this.rosco.cantidad = this.cantidadRosco;
+      const roscoPromise = this.fireService.getPrecioByID(IDROSCOS).then((element: Precio) => {
+        this.rosco.precio = element.precio;
+        this.rosco.id = IDROSCOS;
         this.pedido.productos.push(this.rosco);
-  
+
       })
-  
+
       promesas.push(roscoPromise);
-      }
-   
-  
+    }
+
+
     // Esperar a que todas las promesas se completen antes de continuar
     Promise.all(promesas).then(() => {
       // Llamar al siguiente método después de que todas las consultas hayan terminado
@@ -153,24 +157,24 @@ export class ModificarPedidoPage implements OnInit {
       this.pedido.fechaEntrega = dd + '/' + mm + '/' + yyyy;
 
       this.modificarPedido();
-  
+
       this.dismiss();
     });
-   }//end cargarFormulario
+  }//end cargarFormulario
 
-   modificarPedido(){
+  modificarPedido() {
     this.fireService.modificarPedido(this.pedido)
-    .then(()=>{
-      this.presentToast("Se ha actualizado el pedido")
-      this.closeModal();
-    })
-   }
+      .then(() => {
+        this.presentToast("Se ha actualizado el pedido")
+        this.closeModal();
+      })
+  }
 
 
-   async presentToast(message: string) {
+  async presentToast(message: string) {
     const toast = await this.toastCtrl.create({
       message: message,
-      duration: 6000,
+      duration: 2000,
     });
     toast.present();
   } //end Toast
@@ -186,9 +190,9 @@ export class ModificarPedidoPage implements OnInit {
       cssClass: 'custom-loading',
     }).then(a => {
       a.present().then(() => {
-        console.log('presented');
+        ;
         if (!this.isLoading) {
-          a.dismiss().then(() => console.log('abort presenting'));
+          a.dismiss().then(() => console.log(''));
         }
       });
     });
