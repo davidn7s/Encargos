@@ -11,6 +11,7 @@ export class Pedido {
     productos: Array<any> = new Array<any>();
     fechaEntrega: any;
     estado: ESTADOS = ESTADOS.ENCARGADO;
+    comentario: String="";
 
 
     constructor() {
@@ -40,6 +41,7 @@ export class Pedido {
             pedido.fechaEntrega = pedidoJson['fechaEntrega'];
             pedido.precioTotal = pedidoJson['precioTotal'];
             pedido.estado = pedidoJson['estado'];
+            pedido.comentario = pedidoJson['comentario'];
 
         }
         return pedido;

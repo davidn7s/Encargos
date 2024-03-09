@@ -30,6 +30,8 @@ export class AgregarPedidoPage implements OnInit {
 
   fecha: Date = new Date();
 
+  comentario: String= "";
+
   isLoading: boolean = false;
 
   constructor(private fireService: FireServiceProvider, private toastCtrl: ToastController, private navCtrl: NavController, private loadingCtrl: LoadingController) {
@@ -114,6 +116,8 @@ export class AgregarPedidoPage implements OnInit {
         mm = '0' + mm;
 
       this.pedido.fechaEntrega = dd + '/' + mm + '/' + yyyy;
+      
+      this.pedido.comentario=this.comentario;
 
       this.annadirBBDD();
       this.dismiss();
