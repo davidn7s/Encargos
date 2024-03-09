@@ -3,6 +3,7 @@ import { AlertController, LoadingController, ModalController, ToastController } 
 import { Pedido } from 'src/model/Pedido';
 import { FireServiceProvider } from 'src/providers/api-service/fire-service';
 import { ModificarPedidoPage } from '../modificar-pedido/modificar-pedido.page';
+import { ESTADOS } from 'src/model/ESTADOS';
 
 @Component({
   selector: 'app-tab1',
@@ -74,6 +75,7 @@ export class Tab1Page {
   }//end calcularPrecio
   calcularContadores() {
     for (let inx = 0; inx < this.pedidos.length; inx++) {
+      if (this.pedidos[inx].estado != ESTADOS.ENTREGADO) {
       for (let j = 0; j < this.pedidos[inx].productos.length; j++) {
         if (this.pedidos[inx].productos[j].nombre === "Roscos") {
           this.contadorRoscos += this.pedidos[inx].productos[j].cantidad;
@@ -86,6 +88,7 @@ export class Tab1Page {
           this.contadorGannoPeq += this.pedidos[inx].productos[j].cantidad;
         }
       }
+    }
 
       this.precioTotalPedidos += this.pedidos[inx].precioTotal;
     }

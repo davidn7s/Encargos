@@ -137,7 +137,7 @@ export class AgregarPedidoPage implements OnInit {
       return true;
     if (this.pedido.nombreCliente.length < 3)
       return true;
-    if (this.cantidadGannote < 1 && this.cantidadGannotePeq < 1 && this.cantidadPesti < 1 && this.cantidadRosco < 1)
+    if (this.cantidadGannote <= 0 && this.cantidadGannotePeq <= 0 && this.cantidadPesti <= 0 && this.cantidadRosco <= 0)
       return true;
     if (this.fecha == undefined)
       return true;
