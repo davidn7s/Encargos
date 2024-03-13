@@ -76,7 +76,7 @@ export class AgregarPrecioPage implements OnInit {
       a.present().then(() => {
         ;
         if (!this.isLoading) {
-          a.dismiss().then(() => console.log(''));
+          a.dismiss().then(() => console.log('load'));
         }
       });
     });

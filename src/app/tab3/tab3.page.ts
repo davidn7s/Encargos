@@ -88,6 +88,17 @@ export class Tab3Page implements OnInit {
               this.sumarExistencia(existencia);
             },
           },
+          {
+            text: 'Modificar',
+            handler: () => {
+              this.modExistencia(existencia);
+            },
+          },
+          {
+            text: 'Cancelar',
+            handler: () => {
+            },
+          },
         ],
       })
       .then((res) => {
@@ -95,18 +106,22 @@ export class Tab3Page implements OnInit {
       });
   }//end opciones
   sumarExistencia(existencia: Existencia) {
+    let titulo='Modificar ' + existencia.nombre + ' (En docenas)';
+    if(existencia.id==IDROSCOS ||  existencia.id == IDPESTINNOS){
+      titulo='Modificar ' + existencia.nombre + '(En KG)'
+    }
     this.alertCtrl
       .create({
         cssClass: 'app-alert',
         header:
-          'Sumar ' + existencia.nombre + ' (En docenas)',
+          titulo,
         inputs: [
           {
             name: 'sumExis',
             value: 1,
             type: 'number',
             placeholder: 'Sumar Existencia',
-            min: 1
+            min: 0.1
           }
         ],
         buttons: [
@@ -120,7 +135,7 @@ export class Tab3Page implements OnInit {
           {
             text: 'Sumar',
             handler: (data: any) => {
-              existencia.cantidad += parseInt(data['sumExis'])
+              existencia.cantidad += parseFloat(data['sumExis'])
               this.update(existencia);
             },
           }
@@ -131,18 +146,22 @@ export class Tab3Page implements OnInit {
       });
   }//end sumarExistencia
   restarExistencia(existencia: Existencia) {
+    let titulo='Modificar ' + existencia.nombre + ' (En docenas)';
+    if(existencia.id==IDROSCOS ||  existencia.id == IDPESTINNOS){
+      titulo='Modificar ' + existencia.nombre + '(En KG)'
+    }
     this.alertCtrl
       .create({
         cssClass: 'app-alert',
         header:
-          'Restar ' + existencia.nombre + ' (En docenas)',
+         titulo,
         inputs: [
           {
             name: 'resExis',
             value: 1,
             type: 'number',
             placeholder: 'Restar Existencia',
-            min: 1
+            min: 0.1
           }
         ],
         buttons: [
@@ -156,7 +175,7 @@ export class Tab3Page implements OnInit {
           {
             text: 'Restar',
             handler: (data: any) => {
-              existencia.cantidad -= parseInt(data['resExis'])
+              existencia.cantidad -= parseFloat(data['resExis'])
               this.update(existencia);
             },
           }
@@ -166,6 +185,49 @@ export class Tab3Page implements OnInit {
         res.present();
       });
   }//end restarExistencia
+
+
+  modExistencia(existencia: Existencia) {
+    let titulo='Modificar ' + existencia.nombre + ' (En docenas)';
+    if(existencia.id==IDROSCOS ||  existencia.id == IDPESTINNOS){
+      titulo='Modificar ' + existencia.nombre + '(En KG)'
+    }
+    this.alertCtrl
+      .create({
+        cssClass: 'app-alert',
+        header: titulo,
+        inputs: [
+          {
+            name: 'modExis',
+            value: 1,
+            type: 'number',
+            placeholder: 'Modificar Existencia',
+            min: 0.1
+          }
+        ],
+        buttons: [
+
+          {
+            text: 'Cancelar',
+            handler: () => {
+              console.log('Cancelar');
+            },
+          },
+          {
+            text: 'Modificar',
+            handler: (data: any) => {
+              existencia.cantidad = parseFloat(data['modExis'])
+              this.update(existencia);
+            },
+          }
+        ],
+      })
+      .then((res) => {
+        res.present();
+      });
+  }//end modificarExistencia
+
+
   update(existencia: Existencia) {
     this.firebase.modificarExistencia(existencia)
       .then(() => {
@@ -184,7 +246,7 @@ export class Tab3Page implements OnInit {
       a.present().then(() => {
         ;
         if (!this.isLoading) {
-          a.dismiss().then(() => console.log(''));
+          a.dismiss().then(() => console.log('load'));
         }
       });
     });
