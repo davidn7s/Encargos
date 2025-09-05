@@ -4,6 +4,7 @@ import { Pedido } from 'src/model/Pedido';
 import { FireServiceProvider } from 'src/providers/api-service/fire-service';
 import { ModificarPedidoPage } from '../modificar-pedido/modificar-pedido.page';
 import { ESTADOS } from 'src/model/ESTADOS';
+import { Existencia } from 'src/model/Existencia';
 
 @Component({
   selector: 'app-tab1',
@@ -40,14 +41,14 @@ export class Tab1Page {
   }//end ngOnInit
 
 
-   handleRefresh(event: RefresherCustomEvent) {
+  handleRefresh(event: RefresherCustomEvent) {
     setTimeout(() => {
-      this.getPedidos()
+      this.ngOnInit()
       event.target.complete();
-    }, 2000);
+    }, 1000);
   }
 
-  
+
   async getPedidos() {
     try {
       this.presentLoading();
@@ -86,19 +87,19 @@ export class Tab1Page {
   calcularContadores() {
     for (let inx = 0; inx < this.pedidos.length; inx++) {
       if (this.pedidos[inx].estado != ESTADOS.ENTREGADO) {
-      for (let j = 0; j < this.pedidos[inx].productos.length; j++) {
-        if (this.pedidos[inx].productos[j].nombre === "Roscos") {
-          this.contadorRoscos += this.pedidos[inx].productos[j].cantidad;
-        } else if (this.pedidos[inx].productos[j].nombre === "Gañotes") {
-          this.contadorGanno += this.pedidos[inx].productos[j].cantidad;
-        } else if (this.pedidos[inx].productos[j].nombre === "Pestiños") {
-          this.contadorPesti += this.pedidos[inx].productos[j].cantidad;
-        }
-        else if (this.pedidos[inx].productos[j].nombre === "Gañotes Pequeños") {
-          this.contadorGannoPeq += this.pedidos[inx].productos[j].cantidad;
+        for (let j = 0; j < this.pedidos[inx].productos.length; j++) {
+          if (this.pedidos[inx].productos[j].nombre === "Roscos") {
+            this.contadorRoscos += this.pedidos[inx].productos[j].cantidad;
+          } else if (this.pedidos[inx].productos[j].nombre === "Gañotes") {
+            this.contadorGanno += this.pedidos[inx].productos[j].cantidad;
+          } else if (this.pedidos[inx].productos[j].nombre === "Pestiños") {
+            this.contadorPesti += this.pedidos[inx].productos[j].cantidad;
+          }
+          else if (this.pedidos[inx].productos[j].nombre === "Gañotes Pequeños") {
+            this.contadorGannoPeq += this.pedidos[inx].productos[j].cantidad;
+          }
         }
       }
-    }
 
       this.precioTotalPedidos += this.pedidos[inx].precioTotal;
     }
@@ -122,7 +123,7 @@ export class Tab1Page {
     this.isLoading = false;
     return await this.loadingCtrl.dismiss();
   }//end dismiss
-  cambioTipo(evento:any) {
+  cambioTipo(evento: any) {
     this.pedidosMuestra = new Array();
     if (this.tipo !== 'todo') {
       if (this.tipo === 'Encargado') {
@@ -146,7 +147,7 @@ export class Tab1Page {
       a.fechaEntrega > b.fechaEntrega ? 1 : -1
     );
   } //end cambioTipo
-  buscar(ev:any) {
+  buscar(ev: any) {
     this.textoBuscar = ev.detail.value;
   } //end buscar
   opciones(pedido: Pedido) {
@@ -213,7 +214,7 @@ export class Tab1Page {
           {
             text: 'Aceptar',
             handler: (data: any) => {
-              pedido.estado=data;
+              pedido.estado = data;
               this.firebase.modificarPedido(pedido);
             },
           },
@@ -239,7 +240,7 @@ export class Tab1Page {
           {
             text: 'Eliminar',
             handler: () => {
-              
+
               this.firebase.eliminarPedido(pedido)
                 .then(() => {
                   this.presentToast("Pedido eliminado")
@@ -258,7 +259,7 @@ export class Tab1Page {
       });
   }//end asegurar
 
-   preguntarBorrarExistencias(pedido: Pedido) {
+  preguntarBorrarExistencias(pedido: Pedido) {
     this.alertCtrl
       .create({
         cssClass: 'app-alert',
@@ -268,7 +269,7 @@ export class Tab1Page {
           {
             text: 'Sí',
             handler: () => {
-           
+              this.borrarExistenciasAsociadas(pedido);
             },
           },
           {
@@ -285,8 +286,24 @@ export class Tab1Page {
   }//end preguntarBorrarExistencias
 
 
-  borrarExistenciasAsociadas(){
+  borrarExistenciasAsociadas(pedido: Pedido) {
+    pedido.productos.forEach((producto) => {
+      let productoMod:Existencia;
+      this.firebase.getExistenciaByID(producto.id).then((element) => {
+        productoMod = element;
+        productoMod.cantidad -= producto.cantidad;
+        this.firebase.modificarExistencia(productoMod)
+          .then(() => {
+            console.log(productoMod.nombre)
+            this.presentToast("Existencia eliminada de "+productoMod.nombre)
+          })
+      })
 
+    })
+    this.firebase.eliminarPedido(pedido)
+                .then(() => {
+                  this.presentToast("Pedido eliminado")
+                })
   }
 
   async ventanaModal(pedido: Pedido) {

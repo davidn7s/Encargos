@@ -193,15 +193,33 @@ export class FireServiceProvider {
   } //end_modificar_precio
 
 
+  getExistenciaByID(id: string): Promise<Existencia> {
+    let promise = new Promise<Existencia>((resolve, reject) => {
+      const existenciasRef = this.angularFirestore.collection('Existencias').doc(id).ref;
+      existenciasRef.get().then((data: any) => {
+        let existencia = new Existencia
+        let existenciaJson = data.data();
+        existencia = Existencia.createFromJsonObject(existenciaJson);
+
+        resolve(existencia);
+      })
+        .catch((error: Error) => {
+          reject(error.message);
+        });
+    });
+    return promise;
+  }
+
+
   getPrecioByID(id: string): Promise<Precio> {
     let promise = new Promise<Precio>((resolve, reject) => {
-      const usuariosRef = this.angularFirestore.collection('Precios').doc(id).ref;
-      usuariosRef.get().then((data: any) => {
-        let usuario = new Precio
-        let usuarioJson = data.data();
-        usuario = Precio.createFromJsonObject(usuarioJson);
+      const preciosRef = this.angularFirestore.collection('Precios').doc(id).ref;
+      preciosRef.get().then((data: any) => {
+        let precio = new Precio
+        let precioJson = data.data();
+        precio = Precio.createFromJsonObject(precioJson);
 
-        resolve(usuario);
+        resolve(precio);
       })
         .catch((error: Error) => {
           reject(error.message);
