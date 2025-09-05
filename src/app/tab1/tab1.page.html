@@ -4,6 +4,8 @@
       <strong>Pedidos</strong>
     </ion-title>
 
+    
+
     <!--Contadores-->
     <ion-item id="contadores">
       Hay {{contadorGanno}} docenas de Gañotes pedidos
@@ -20,7 +22,7 @@
     </ion-item>
 
     <!--Barra de búsqueda-->
-    <ion-searchbar placeholder="Buscar pedido" (ionChange)="buscar($event)"></ion-searchbar>
+    <ion-searchbar placeholder="Buscar pedido" (ionInput)="buscar($event)"></ion-searchbar>
 
     <!--Select de tipo-->
     <ion-item>
@@ -36,6 +38,12 @@
 </ion-header>
 
 <ion-content [fullscreen]="true">
+
+
+    <ion-refresher slot="fixed" (ionRefresh)="handleRefresh($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+
 
   <ion-list *ngFor="let p of pedidosMuestra | filtro: textoBuscar: 'nombreCliente'">
     <ion-card mode="ios" (click)="opciones(p)">

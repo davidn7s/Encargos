@@ -54,6 +54,20 @@ export class FireServiceProvider {
     return promise;
   } //end_insertar_pedido
 
+  insertarPedidoBorrado(datosPedidoBorrado: Pedido): Promise<Pedido> {
+    let promise = new Promise<Pedido>((resolve, reject) => {
+      //datosNuevoProducto.id = this.angularFirestore.collection("Pedidos_Borrados").ref.doc().id;
+      this.angularFirestore.collection("Pedidos_Borrados").doc(datosPedidoBorrado.id).set(JSON.parse(JSON.stringify(datosPedidoBorrado)))
+        .then(() => {
+          resolve(datosPedidoBorrado);
+        })
+        .catch((error: Error) => {
+          reject(error.message);
+        });
+    });
+    return promise;
+  } //end_insertarPedidoBorrado
+
   modificarPedido(nuevosDatosProducto: Pedido): Promise<Pedido> {
     let promise = new Promise<Pedido>((resolve, reject) => {
       this.angularFirestore.collection("Pedidos").doc(nuevosDatosProducto.id).update(JSON.parse(JSON.stringify(nuevosDatosProducto)))
@@ -69,6 +83,15 @@ export class FireServiceProvider {
   } //end_modificar_pedido
 
   eliminarPedido(producto: Pedido): Promise<Boolean> {
+   const copia: Pedido = JSON.parse(JSON.stringify(producto));
+    const id = new Date().toLocaleDateString("es-ES", { timeZone: "Europe/Madrid" }).replace(/\//g, "")
+      + "_" + Date.now();
+
+    copia.id = id;
+    this.insertarPedidoBorrado(copia)
+      .then((element: any) => {
+      })
+
     let promise = new Promise<Boolean>((resolve, reject) => {
       this.angularFirestore.collection('Pedidos').doc(producto.id).delete().then(
         (data: any) => {
@@ -170,7 +193,7 @@ export class FireServiceProvider {
   } //end_modificar_precio
 
 
-  getPrecioByID(id:string): Promise<Precio> {
+  getPrecioByID(id: string): Promise<Precio> {
     let promise = new Promise<Precio>((resolve, reject) => {
       const usuariosRef = this.angularFirestore.collection('Precios').doc(id).ref;
       usuariosRef.get().then((data: any) => {

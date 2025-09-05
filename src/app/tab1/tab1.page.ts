@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { AlertController, LoadingController, ModalController, ToastController } from '@ionic/angular';
+import { AlertController, LoadingController, ModalController, RefresherCustomEvent, ToastController, IonRefresher, IonRefresherContent } from '@ionic/angular';
 import { Pedido } from 'src/model/Pedido';
 import { FireServiceProvider } from 'src/providers/api-service/fire-service';
 import { ModificarPedidoPage } from '../modificar-pedido/modificar-pedido.page';
@@ -38,6 +38,16 @@ export class Tab1Page {
       this.getPedidos();
     });
   }//end ngOnInit
+
+
+   handleRefresh(event: RefresherCustomEvent) {
+    setTimeout(() => {
+      this.getPedidos()
+      event.target.complete();
+    }, 2000);
+  }
+
+  
   async getPedidos() {
     try {
       this.presentLoading();
@@ -161,7 +171,7 @@ export class Tab1Page {
           {
             text: 'Eliminar',
             handler: (data: any) => {
-              this.asegurar(pedido);
+              this.preguntarBorrarExistencias(pedido)
             },
           }
         ],
@@ -229,6 +239,7 @@ export class Tab1Page {
           {
             text: 'Eliminar',
             handler: () => {
+              
               this.firebase.eliminarPedido(pedido)
                 .then(() => {
                   this.presentToast("Pedido eliminado")
@@ -246,6 +257,38 @@ export class Tab1Page {
         res.present();
       });
   }//end asegurar
+
+   preguntarBorrarExistencias(pedido: Pedido) {
+    this.alertCtrl
+      .create({
+        cssClass: 'app-alert',
+        header:
+          `¿Quieres borrar las existencias asociadas a este pedido?`,
+        buttons: [
+          {
+            text: 'Sí',
+            handler: () => {
+           
+            },
+          },
+          {
+            text: 'No',
+            handler: (data: any) => {
+              this.asegurar(pedido);
+            },
+          }
+        ],
+      })
+      .then((res) => {
+        res.present();
+      });
+  }//end preguntarBorrarExistencias
+
+
+  borrarExistenciasAsociadas(){
+
+  }
+
   async ventanaModal(pedido: Pedido) {
     const modal = await this.modalController.create({
       component: ModificarPedidoPage,
