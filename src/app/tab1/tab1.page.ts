@@ -21,6 +21,7 @@ export class Tab1Page {
   public contadorPesti: number = 0;
   public contadorRoscos: number = 0;
   public contadorGannoPeq: number = 0;
+  public contadorEmpanadillas: number=0;
 
   isLoading = false;
 
@@ -36,17 +37,17 @@ export class Tab1Page {
       this.contadorPesti = 0;
       this.contadorRoscos = 0;
       this.precioTotalPedidos = 0;
+      this.contadorEmpanadillas=0;
       this.getPedidos();
     });
   }//end ngOnInit
 
 
-  handleRefresh(event: RefresherCustomEvent) {
-    setTimeout(() => {
-      this.ngOnInit()
-      event.target.complete();
-    }, 1000);
-  }
+handleRefresh(event: RefresherCustomEvent) {
+  this.getPedidos().finally(() => {
+    event.target.complete();
+  });
+}
 
 
   async getPedidos() {
@@ -61,7 +62,7 @@ export class Tab1Page {
       this.pedidos = element;
       this.pedidosMuestra = element;
 
-      //Ordenar pedidos de más nuevas a más antiguas
+     /* //Ordenar pedidos de más nuevas a más antiguas
       this.pedidos.sort((a, b) =>
         a.fechaEntrega > b.fechaEntrega ? 1 : -1
       );
@@ -69,7 +70,7 @@ export class Tab1Page {
       //Ordenar pedidos de más nuevas a más antiguas
       this.pedidosMuestra.sort((a, b) =>
         a.fechaEntrega > b.fechaEntrega ? 1 : -1
-      );
+      );*/
 
       // Llamar a otro método después de que la promesa se ha resuelto
       this.calcularContadores();
@@ -98,31 +99,41 @@ export class Tab1Page {
           else if (this.pedidos[inx].productos[j].nombre === "Gañotes Pequeños") {
             this.contadorGannoPeq += this.pedidos[inx].productos[j].cantidad;
           }
+           else if (this.pedidos[inx].productos[j].nombre === "Empanadillas") {
+            this.contadorEmpanadillas += this.pedidos[inx].productos[j].cantidad;
+          }
         }
       }
 
       this.precioTotalPedidos += this.pedidos[inx].precioTotal;
     }
   }//end calcularContadores
-  async presentLoading() {
-    this.isLoading = true;
-    return await this.loadingCtrl.create({
-      message: 'Cargando pedidos...',
-      spinner: 'bubbles',
-      cssClass: 'custom-loading',
-    }).then(a => {
-      a.present().then(() => {
-        ;
-        if (!this.isLoading) {
-          a.dismiss().then(() => console.log('abort presenting'));
-        }
-      });
-    });
-  }//end presentLoading
-  async dismiss() {
-    this.isLoading = false;
-    return await this.loadingCtrl.dismiss();
-  }//end dismiss
+
+
+private loading: HTMLIonLoadingElement | null = null;
+
+async presentLoading() {
+  if (this.loading) return; // evita loading duplicados
+
+  this.loading = await this.loadingCtrl.create({
+    message: 'Cargando pedidos...',
+    spinner: 'bubbles',
+    cssClass: 'custom-loading',
+  });
+
+  await this.loading.present();
+}
+
+
+
+async dismiss() {
+  if (this.loading) {
+    await this.loading.dismiss();
+    this.loading = null;
+  }
+}
+
+
   cambioTipo(evento: any) {
     this.pedidosMuestra = new Array();
     if (this.tipo !== 'todo') {

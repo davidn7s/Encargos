@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { AlertController, LoadingController } from '@ionic/angular';
-import { IDGANNOTES, IDGANNOTESPEQ, IDPESTINNOS, IDROSCOS } from 'src/model/CONSTANTES';
+import { IDGANNOTES, IDGANNOTESPEQ, IDPESTINNOS, IDROSCOS, IDEMPANADILLAS } from 'src/model/CONSTANTES';
 import { ESTADOS } from 'src/model/ESTADOS';
 import { Existencia } from 'src/model/Existencia';
 import { Pedido } from 'src/model/Pedido';
@@ -20,6 +20,7 @@ export class Tab3Page implements OnInit {
   public contadorPesti: number = 0;
   public contadorRoscos: number = 0;
   public contadorGannoPeq: number = 0;
+  public contadorEmpanadillas: number=0;
 
   public pedidos: Array<Pedido> = new Array();
 
@@ -260,6 +261,7 @@ export class Tab3Page implements OnInit {
     this.contadorGannoPeq = 0;
     this.contadorPesti = 0;
     this.contadorRoscos = 0;
+    this.contadorEmpanadillas = 0;
 
     //Calcular cuantos pedidos hay de cada dulce
     for (let inx = 0; inx < this.pedidos.length; inx++) {
@@ -276,6 +278,9 @@ export class Tab3Page implements OnInit {
           else if (this.pedidos[inx].productos[j].nombre === "Gañotes Pequeños") {
             this.contadorGannoPeq += this.pedidos[inx].productos[j].cantidad;
           }
+          else if (this.pedidos[inx].productos[j].nombre === "Empanadillas") {
+            this.contadorEmpanadillas += this.pedidos[inx].productos[j].cantidad;
+          }
         }
       }
 
@@ -291,7 +296,10 @@ export class Tab3Page implements OnInit {
         this.contadorPesti -= this.existencias[inx].cantidad;
       } else if (this.existencias[inx].id === IDROSCOS) {
         this.contadorRoscos -= this.existencias[inx].cantidad;
+      }else if (this.existencias[inx].id === IDEMPANADILLAS) {
+        this.contadorEmpanadillas -= this.existencias[inx].cantidad;
       }
+      
     }
   }//end calcularContadores
 

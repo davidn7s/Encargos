@@ -1,3 +1,4 @@
+import { Empanadilla } from "./Empanadillas";
 import { ESTADOS } from "./ESTADOS";
 import { Gannote } from "./Gannote";
 import { Pestinno } from "./Pestinno";
@@ -35,6 +36,9 @@ export class Pedido {
                     pedido.productos.push(Pestinno.createFromJsonObject(element));
                 } else if (element.nombre === 'Roscos') {
                     pedido.productos.push(Rosco.createFromJsonObject(element));
+                }
+                else if (element.nombre === 'Empanadillas') {
+                    pedido.productos.push(Empanadilla.createFromJsonObject(element));
                 }
             });
 

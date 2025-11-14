@@ -22,7 +22,7 @@ export class FireServiceProvider {
 
   getPedidos(): Promise<Pedido[]> {
     let promise = new Promise<Pedido[]>((resolve, reject) => {
-      const productoRef = this.angularFirestore.collection('Pedidos');
+      const productoRef = this.angularFirestore.collection('Pedidos', ref => ref.orderBy('fechaEntrega','asc'));
       const snapshot = productoRef.get().toPromise()
         .then((data: any) => {
           let productos = new Array<Pedido>();
@@ -131,7 +131,7 @@ export class FireServiceProvider {
 
   getExistencias(): Promise<Existencia[]> {
     let promise = new Promise<Existencia[]>((resolve, reject) => {
-      const productoRef = this.angularFirestore.collection('Existencias');
+      const productoRef = this.angularFirestore.collection('Existencias', ref => ref.orderBy('id', 'asc'));
       const snapshot = productoRef.get().toPromise()
         .then((data: any) => {
           let existencias = new Array<Existencia>();

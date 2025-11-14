@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { LoadingController, NavController, ToastController } from '@ionic/angular';
-import { IDGANNOTES, IDGANNOTESPEQ, IDPESTINNOS, IDROSCOS } from 'src/model/CONSTANTES';
+import { IDGANNOTES, IDGANNOTESPEQ, IDPESTINNOS, IDROSCOS, IDEMPANADILLAS } from 'src/model/CONSTANTES';
+import { Empanadilla } from 'src/model/Empanadillas';
 import { Gannote } from 'src/model/Gannote';
 import { Pedido } from 'src/model/Pedido';
 import { Pestinno } from 'src/model/Pestinno';
@@ -27,6 +28,9 @@ export class AgregarPedidoPage implements OnInit {
 
   public cantidadRosco = 0;
   public rosco: Rosco = new Rosco();
+
+  public cantidadEmpanadilla=0;
+  public empanadilla: Empanadilla= new Empanadilla();
 
   fecha: Date = new Date();
 
@@ -99,6 +103,19 @@ export class AgregarPedidoPage implements OnInit {
     }
 
 
+       if (this.cantidadEmpanadilla > 0) {
+      this.empanadilla.cantidad = this.cantidadEmpanadilla;
+      const empanadillaPromise = this.fireService.getPrecioByID(IDEMPANADILLAS).then((element: Precio) => {
+        this.empanadilla.precio = element.precio;
+        this.empanadilla.id = IDEMPANADILLAS;
+        this.pedido.productos.push(this.empanadilla);
+
+      })
+
+      promesas.push(empanadillaPromise);
+    }
+
+
     // Esperar a que todas las promesas se completen antes de continuar
     Promise.all(promesas).then(() => {
       // Llamar al siguiente método después de que todas las consultas hayan terminado
@@ -141,7 +158,7 @@ export class AgregarPedidoPage implements OnInit {
       return true;
     if (this.pedido.nombreCliente.length < 3)
       return true;
-    if (this.cantidadGannote <= 0 && this.cantidadGannotePeq <= 0 && this.cantidadPesti <= 0 && this.cantidadRosco <= 0)
+    if (this.cantidadGannote <= 0 && this.cantidadGannotePeq <= 0 && this.cantidadPesti <= 0 && this.cantidadRosco <= 0 && this.cantidadEmpanadilla<=0)
       return true;
     if (this.fecha == undefined)
       return true;
