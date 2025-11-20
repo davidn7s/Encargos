@@ -66,25 +66,25 @@ export class AgregarPrecioPage implements OnInit {
   }
 
 
-  async presentLoading() {
-    this.isLoading = true;
-    return await this.loadingCtrl.create({
-      message: 'Cargando existencias...',
-      spinner: 'bubbles',
-      cssClass: 'custom-loading',
-    }).then(a => {
-      a.present().then(() => {
-        ;
-        if (!this.isLoading) {
-          a.dismiss().then(() => console.log('load'));
-        }
-      });
-    });
-  }//end presentLoading
+private loading: HTMLIonLoadingElement | null = null;
+
+async presentLoading() {
+  if (this.loading) return; // evita loading duplicados
+
+  this.loading = await this.loadingCtrl.create({
+    message: 'Cargando existencias...',
+    spinner: 'bubbles',
+    cssClass: 'custom-loading',
+  });
+
+  await this.loading.present();
+}
 
 
-  async dismiss() {
-    this.isLoading = false;
-    return await this.loadingCtrl.dismiss();
+async dismiss() {
+  if (this.loading) {
+    await this.loading.dismiss();
+    this.loading = null;
   }
+}
 }

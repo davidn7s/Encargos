@@ -30,46 +30,39 @@ export class Tab3Page implements OnInit {
 
   }//end ngOnInit
 
-  ionViewWillEnter() {
-    this.firebase.getExistenciasTR().subscribe(() => {
-      this.getExistencias();
-    });
-    this.firebase.getPedidosTR().subscribe(() => {
-      this.getPedidos();
-    });
+ionViewWillEnter() {
+  this.presentLoading();
 
+  Promise.all([
+    this.getExistencias(),
+    this.getPedidos()
+  ])
+  .finally(() => {
+    this.dismiss();
+  });
+}
+async getExistencias() {
+  try {
+    const element = await this.firebase.getExistencias();
+    this.existencias = element;
+    this.calcularContadores();
+  } catch (error) {
+    console.log(error);
   }
-  async getExistencias() {
-    try {
-      this.presentLoading();
-      const element = await this.firebase.getExistencias();
+}
 
-      this.existencias = element;
 
-      this.calcularContadores();
-      this.dismiss();
+ async getPedidos() {
+  try {
+    const element = await this.firebase.getPedidos();
+    this.pedidos = element;
+    this.calcularContadores();
+  } catch (error) {
+    console.log(error);
+  }
+}
 
-    } catch (error) {
-      console.log(error)
-    }
-  }//end getExistencias
-  async getPedidos() {
-    try {
-      this.presentLoading();
 
-      // Esperar a que la promesa se complete
-      const element = await this.firebase.getPedidos();
-
-      // La promesa se resolvió, continuar con el código
-      this.pedidos = element;
-
-      // Llamar a otro método después de que la promesa se ha resuelto
-      this.calcularContadores();
-      this.dismiss();
-    } catch (error) {
-      console.log(error);
-    }
-  }//end getPedidos
   opciones(existencia: Existencia) {
     this.alertCtrl
       .create({
@@ -237,25 +230,27 @@ export class Tab3Page implements OnInit {
         console.log(error)
       })
   }//end update
-  async presentLoading() {
-    this.isLoading = true;
-    return await this.loadingCtrl.create({
-      message: 'Cargando existencias...',
-      spinner: 'bubbles',
-      cssClass: 'custom-loading',
-    }).then(a => {
-      a.present().then(() => {
-        ;
-        if (!this.isLoading) {
-          a.dismiss().then(() => console.log('load'));
-        }
-      });
-    });
-  }//end presentLoading
-  async dismiss() {
-    this.isLoading = false;
-    return await this.loadingCtrl.dismiss();
-  }//end dismiss
+ private loading: HTMLIonLoadingElement | null = null;
+
+async presentLoading() {
+  if (this.loading) return; // evita loading duplicados
+
+  this.loading = await this.loadingCtrl.create({
+    message: 'Cargando existencias...',
+    spinner: 'bubbles',
+    cssClass: 'custom-loading',
+  });
+
+  await this.loading.present();
+}
+
+
+async dismiss() {
+  if (this.loading) {
+    await this.loading.dismiss();
+    this.loading = null;
+  }
+}
   calcularContadores() {
     this.contadorGanno = 0;
     this.contadorGannoPeq = 0;
