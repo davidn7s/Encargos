@@ -27,20 +27,21 @@ export class Tab1Page {
 
   textoBuscar: string = '';
   public tipo: string = 'todo';
+  private sub: any;
 
   constructor(private firebase: FireServiceProvider, public loadingCtrl: LoadingController, public alertCtrl: AlertController, private modalController: ModalController, private toastCtrl: ToastController) { }
 
   ngOnInit() {
-    this.firebase.getPedidosTR().subscribe(() => {
-      this.contadorGanno = 0;
-      this.contadorGannoPeq = 0;
-      this.contadorPesti = 0;
-      this.contadorRoscos = 0;
-      this.precioTotalPedidos = 0;
-      this.contadorEmpanadillas=0;
+   this.sub = this.firebase.getPedidosTR().subscribe(() => {
       this.getPedidos();
     });
   }//end ngOnInit
+
+  ngOnDestroy() {
+  if (this.sub) {
+    this.sub.unsubscribe();
+  }
+}
 
 
 handleRefresh(event: RefresherCustomEvent) {
@@ -86,6 +87,13 @@ handleRefresh(event: RefresherCustomEvent) {
     }
   }//end calcularPrecio
   calcularContadores() {
+      this.contadorGanno = 0;
+      this.contadorGannoPeq = 0;
+      this.contadorPesti = 0;
+      this.contadorRoscos = 0;
+      this.precioTotalPedidos = 0;
+      this.contadorEmpanadillas=0;
+
     for (let inx = 0; inx < this.pedidos.length; inx++) {
       if (this.pedidos[inx].estado != ESTADOS.ENTREGADO) {
         for (let j = 0; j < this.pedidos[inx].productos.length; j++) {
